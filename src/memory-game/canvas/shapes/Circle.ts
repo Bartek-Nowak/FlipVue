@@ -1,11 +1,12 @@
 import { Shape } from './Shape'
+import type { CircleConfig } from './types'
 
 export class Circle extends Shape {
   radius: number
   color: string
 
-  constructor(x: number, y: number, radius: number, color: string) {
-    super(x, y)
+  constructor({ x, y, radius, color }: CircleConfig) {
+    super({ x, y })
     this.radius = radius
     this.color = color
   }
