@@ -1,7 +1,10 @@
+import type { ShapeConfig } from './types'
+
 export abstract class Shape {
   x: number
   y: number
-  constructor(x: number, y: number) {
+
+  constructor({ x, y }: ShapeConfig) {
     this.x = x
     this.y = y
   }
