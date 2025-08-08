@@ -1,12 +1,13 @@
 import { Shape } from './Shape'
+import type { RectangleConfig } from './types'
 
 export class Rectangle extends Shape {
   width: number
   height: number
   color: string
 
-  constructor(x: number, y: number, width: number, height: number, color: string) {
-    super(x, y)
+  constructor({ x, y, width, height, color }: RectangleConfig) {
+    super({ x, y })
     this.width = width
     this.height = height
     this.color = color
