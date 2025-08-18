@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-screen">
+  <div class="aspect-square h-screen border">
     <MemoryCanvas />
   </div>
 </template>
