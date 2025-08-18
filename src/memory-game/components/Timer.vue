@@ -16,27 +16,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed } from 'vue'
 
-const time = ref(0)
-let timer: ReturnType<typeof setInterval>
+const props = defineProps<{ time: number }>()
+
+const progress = computed(() => (props.time % 10) / 10)
 
 const colors = ['#ff0000', '#ffa500', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff']
-let currentColorIndex = 0
-const currentColor = ref(colors[currentColorIndex])
-const progress = ref(0)
-
-const startTimer = () => {
-  timer = setInterval(() => {
-    time.value++
-    progress.value = (time.value % 10) / 10
-    if (time.value % 10 === 0) {
-      currentColorIndex = (currentColorIndex + 1) % colors.length
-      currentColor.value = colors[currentColorIndex]
-    }
-  }, 1000)
-}
-
-onMounted(() => startTimer())
-onUnmounted(() => clearInterval(timer))
+const currentColorIndex = computed(() => Math.floor(props.time / 10) % colors.length)
+const currentColor = computed(() => colors[currentColorIndex.value])
 </script>

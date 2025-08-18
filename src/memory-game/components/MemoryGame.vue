@@ -7,7 +7,7 @@
       <div class="mb-6 flex w-full gap-6 lg:flex-col">
         <div class="flex flex-col items-center gap-2">
           <span class="text-xl font-bold">Timer</span>
-          <Timer :initialTime="time" />
+          <Timer :time="time" />
         </div>
         <div class="flex flex-col items-center gap-2">
           <span class="text-xl font-bold">Moves</span>
@@ -16,12 +16,14 @@
       </div>
 
       <button
+        @click="newGame"
         class="mt-auto w-full rounded-lg bg-purple-600 px-4 py-2 font-bold transition hover:bg-purple-700"
       >
         New Game
       </button>
 
       <button
+        @click="shareSeed"
         class="mt-2 w-full rounded-lg bg-blue-600 px-4 py-2 font-bold transition hover:bg-blue-700"
       >
         Share Game
@@ -38,12 +40,27 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useGameStore } from '../stores/game'
 import MemoryCanvas from './MemoryCanvas.vue'
 import Timer from './Timer.vue'
 import MoveCounter from './MoveCounter.vue'
 
-const time = ref(0)
 const moves = ref(0)
+
+const gameStore = useGameStore()
+
+const shareSeed = () => {
+  navigator.clipboard.writeText(gameStore.shareLink)
+  alert('Link copied to clipboard!')
+}
+
+const newGame = () => {
+  gameStore.generateNewSeed()
+  const url = gameStore.shareLink
+  window.location.href = url
+}
+
+const time = ref(0)
 let timer: ReturnType<typeof setInterval>
 
 const stopTimer = () => clearInterval(timer)

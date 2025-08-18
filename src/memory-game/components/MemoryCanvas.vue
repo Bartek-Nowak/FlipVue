@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { TresCanvas } from '@tresjs/core'
+import { useGameStore } from '../stores/game'
 import { useTileGrid } from '../composables/useTileGrid'
 import Tile from './Tile.vue'
 
@@ -8,8 +9,8 @@ const emit = defineEmits(['move-made', 'game-over'])
 
 const totalTiles = 12
 const tileSize: [number, number, number] = [1, 1, 0.05]
-const seed = 1234
-const { tiles, cameraZ, fov } = useTileGrid(totalTiles, tileSize, seed)
+const gameStore = useGameStore()
+const { tiles, cameraZ, fov } = useTileGrid(totalTiles, tileSize, gameStore.seed)
 
 const flippedTiles = ref<number[]>([])
 const matchedTiles = ref<Set<number>>(new Set())
