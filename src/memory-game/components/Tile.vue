@@ -82,10 +82,6 @@ onLoop(() => {
   rotationY.value = lerp(rotationY.value, targetTiltY.value + targetRotationY)
 })
 
-const flipCard = () => {
-  isFlipped.value = !isFlipped.value
-}
-
 const handlePointerMove = (e: any) => {
   if (!isHovered.value) return
   const { uv } = e
@@ -113,7 +109,6 @@ const handlePointerLeave = () => {
     @pointer-enter="isHovered = true"
     @pointer-leave="handlePointerLeave"
     @pointer-move="handlePointerMove"
-    @click="flipCard"
   >
     <TresBoxGeometry :args="size" />
 
