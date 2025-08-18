@@ -56,22 +56,45 @@ const hoverScaleFactor = 1.05
 
 const scale = ref(defaultScale)
 const rotationY = ref(0)
+const rotationX = ref(0)
 const isHovered = ref(false)
 
-const lerpValue = (current: number, target: number) => current + (target - current) * 0.1
-const animateFlip = (current: number, target: number) => current + (target - current) * 0.1
+const targetTiltX = ref(0)
+const targetTiltY = ref(0)
+const maxTilt = 0.6
+
+const lerp = (current: number, target: number, speed = 0.1) => current + (target - current) * speed
 
 const { onLoop } = useRenderLoop()
 onLoop(() => {
   const targetScale = isHovered.value && !isFlipped.value ? hoverScaleFactor : defaultScale
-  const targetRotation = isFlipped.value ? Math.PI : 0
+  const targetRotationY = isFlipped.value ? Math.PI : 0
 
-  scale.value = lerpValue(scale.value, targetScale)
-  rotationY.value = animateFlip(rotationY.value, targetRotation)
+  scale.value = lerp(scale.value, targetScale)
+  rotationY.value = lerp(rotationY.value, targetRotationY)
+  rotationX.value = lerp(rotationX.value, targetTiltX.value)
+  rotationY.value = lerp(rotationY.value, targetTiltY.value + targetRotationY)
 })
 
 const flipCard = () => {
   isFlipped.value = !isFlipped.value
+}
+
+const handlePointerMove = (e: any) => {
+  if (!isHovered.value) return
+  const { uv } = e
+  if (!uv) return
+  const offsetX = uv.x - 0.5
+  const offsetY = uv.y - 0.5
+
+  targetTiltX.value = -offsetY * maxTilt
+  targetTiltY.value = offsetX * maxTilt
+}
+
+const handlePointerLeave = () => {
+  isHovered.value = false
+  targetTiltX.value = 0
+  targetTiltY.value = 0
 }
 </script>
 
@@ -79,10 +102,11 @@ const flipCard = () => {
   <TresMesh
     :position="position || [0, 0, 0]"
     :scale="[scale, scale, defaultScale]"
-    :rotation="[0, rotationY, 0]"
+    :rotation="[rotationX, rotationY, 0]"
     :material="materials"
     @pointer-enter="isHovered = true"
-    @pointer-leave="isHovered = false"
+    @pointer-leave="handlePointerLeave"
+    @pointer-move="handlePointerMove"
     @click="flipCard"
   >
     <TresBoxGeometry :args="size" />
