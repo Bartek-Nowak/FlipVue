@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRenderLoop } from '@tresjs/core'
 import { MeshStandardMaterial, CanvasTexture, TextureLoader } from 'three'
 import { rarityColor } from '../utils/cardRarity'
+
+const reverseImageUrl = '/reverse-card.png'
 
 const isFlipped = defineModel<boolean>('isFlipped')
 
@@ -23,16 +25,21 @@ const props = defineProps<{
 
 const gradientTexture = new CanvasTexture(rarityColor(props.rarity))
 
-const materials = [
+const materials = ref([
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'black' }),
-  new MeshStandardMaterial({ color: '#333133' }),
+  new MeshStandardMaterial({ color: 'red' }),
   new MeshStandardMaterial({ map: gradientTexture }),
-]
+])
 
-const imageTexture = ref<any>(null)
+onMounted(() => {
+  new TextureLoader().load(reverseImageUrl, (texture) => {
+    materials.value[4] = new MeshStandardMaterial({ map: texture })
+  })
+})
+
 const planeMaterial = ref<MeshStandardMaterial | null>(null)
 
 watch(
@@ -40,7 +47,6 @@ watch(
   (url) => {
     if (!url) return
     new TextureLoader().load(url, (texture) => {
-      imageTexture.value = texture
       planeMaterial.value = new MeshStandardMaterial({
         map: texture,
         transparent: true,

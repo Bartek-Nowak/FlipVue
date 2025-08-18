@@ -3,10 +3,11 @@ import { TresCanvas } from '@tresjs/core'
 import Tile from './Tile.vue'
 import { useTileGrid } from '../composables/useTileGrid'
 
-const totalTiles = 2
+const totalTiles = 12
 const tileSize: [number, number, number] = [1, 1, 0.05]
 
-const { tiles, cameraZ, fov } = useTileGrid(totalTiles, tileSize)
+const seed = 1234
+const { tiles, cameraZ, fov } = useTileGrid(totalTiles, tileSize, seed)
 </script>
 
 <template>
@@ -18,9 +19,9 @@ const { tiles, cameraZ, fov } = useTileGrid(totalTiles, tileSize)
       :position="tile.position"
       :size="tileSize"
       v-model:isFlipped="tile.isFlipped"
-      image-url="/kuro-logo.png"
-      rarity="mythical"
+      :image-url="tile.imageUrl"
+      :rarity="tile.rarity"
     />
-    <TresAmbientLight :intensity="1" />
+    <TresAmbientLight :intensity="2" />
   </TresCanvas>
 </template>

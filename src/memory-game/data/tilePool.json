@@ -1,0 +1,10 @@
+[
+  { "imageUrl": "/images/1.png", "rarity": "common", "weight": 40 },
+  { "imageUrl": "/images/7.png", "rarity": "common", "weight": 40 },
+  { "imageUrl": "/images/2.png", "rarity": "uncommon", "weight": 25 },
+  { "imageUrl": "/images/3.png", "rarity": "rare", "weight": 15 },
+  { "imageUrl": "/images/4.png", "rarity": "mythical", "weight": 10 },
+  { "imageUrl": "/images/5.png", "rarity": "legendary", "weight": 5 },
+  { "imageUrl": "/images/6.png", "rarity": "ancient", "weight": 3 },
+  { "imageUrl": "/images/8.png", "rarity": "immortal", "weight": 1 }
+]
