@@ -19,65 +19,19 @@ const getGradient = ({ initialColor, transitionalColor, finalColor }: GradientOp
   return canvas
 }
 
-export const getImmortalGradient = () => {
-  return getGradient({
-    initialColor: '#ff9500',
-    transitionalColor: '#915500',
-    finalColor: '#633a00',
-  })
-}
-
-export const getExceediglyRareGradient = () => {
-  return getGradient({
-    initialColor: '#ffff00',
-    transitionalColor: '#969600',
-    finalColor: '#474700',
-  })
-}
-
-export const getAncientGradient = () => {
-  return getGradient({
-    initialColor: '#ff0000',
-    transitionalColor: '#8c0000',
-    finalColor: '#2e0000',
-  })
-}
-
-export const getLegendaryGradient = () => {
-  return getGradient({
-    initialColor: '#ff00ee',
-    transitionalColor: '#a8009d',
-    finalColor: '#5c0056',
-  })
-}
-
-export const getMythicalGradient = () => {
-  return getGradient({
-    initialColor: '#f3a6ff',
-    transitionalColor: '#9b41ab',
-    finalColor: '#56245e',
-  })
-}
-
-export const getRareGradient = () => {
-  return getGradient({
-    initialColor: '#0d00ff',
-    transitionalColor: '#080096',
-    finalColor: '#030040',
-  })
-}
-
-export const getUncommonGradient = () => {
-  return getGradient({
-    initialColor: '#87c3ff',
-    transitionalColor: '#4f89c4',
-    finalColor: '#1a3e61',
-  })
-}
-export const getCommonGradient = () => {
-  return getGradient({
-    initialColor: '#ffffff',
-    transitionalColor: '#dfe0de',
-    finalColor: '#bebfbd',
-  })
-}
+export const getCommonGradient = () =>
+  getGradient({ initialColor: '#ffffff', transitionalColor: '#cccccc', finalColor: '#666666' })
+export const getUncommonGradient = () =>
+  getGradient({ initialColor: '#a0e0ff', transitionalColor: '#3399ff', finalColor: '#002244' })
+export const getRareGradient = () =>
+  getGradient({ initialColor: '#7f00ff', transitionalColor: '#3300cc', finalColor: '#0a0033' })
+export const getMythicalGradient = () =>
+  getGradient({ initialColor: '#ffb3ff', transitionalColor: '#cc33cc', finalColor: '#330033' })
+export const getLegendaryGradient = () =>
+  getGradient({ initialColor: '#ff00ee', transitionalColor: '#a8009d', finalColor: '#2c0030' })
+export const getAncientGradient = () =>
+  getGradient({ initialColor: '#ff0000', transitionalColor: '#8c0000', finalColor: '#200000' })
+export const getExceediglyRareGradient = () =>
+  getGradient({ initialColor: '#ffff00', transitionalColor: '#969600', finalColor: '#222200' })
+export const getImmortalGradient = () =>
+  getGradient({ initialColor: '#ffb347', transitionalColor: '#915500', finalColor: '#2f1700' })
