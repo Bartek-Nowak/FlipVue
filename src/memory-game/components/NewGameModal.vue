@@ -1,5 +1,5 @@
 <template>
-  <BaseModal :is-open="isOpen" title="🎯 Ready to Play? 🎯" @close="closeModal">
+  <BaseModal :is-open="isOpen" title="🎯 Ready to Play? 🎯" @close="closeModal" hidde-close-button>
     <div class="flex flex-col items-center justify-center gap-4 text-center">
       <div class="text-lg font-medium">Welcome to the Memory Game!</div>
 

@@ -64,6 +64,10 @@ watch(
     tiles.value = newTiles.value
     cameraZ.value = newZ.value
     fov.value = newF
+
+    flippedTiles.value = []
+    matchedTiles.value = new Set()
+    isProcessing.value = false
   },
 )
 </script>

@@ -37,7 +37,7 @@
     </div>
 
     <NewGameModal v-model:isOpen="isNewGame" @start-game="startTimer" />
-    <GameOverModal v-model:isOpen="isGameOver" />
+    <GameOverModal v-model:isOpen="isGameOver" @play-again="newGame" />
   </div>
 </template>
 

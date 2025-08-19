@@ -23,22 +23,36 @@ const props = defineProps<{
     | 'immortal'
 }>()
 
-const gradientTexture = new CanvasTexture(rarityColor(props.rarity))
+const gradientMaterial = ref<MeshStandardMaterial | null>(null)
 
-const materials = ref([
+const materials = ref<MeshStandardMaterial[]>([
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'black' }),
   new MeshStandardMaterial({ color: 'red' }),
-  new MeshStandardMaterial({ map: gradientTexture }),
 ])
 
-onMounted(() => {
-  new TextureLoader().load(reverseImageUrl, (texture) => {
-    materials.value[4] = new MeshStandardMaterial({ map: texture })
-  })
-})
+watch(
+  () => props.rarity,
+  (r) => {
+    const canvas = rarityColor(r)
+    const texture = new CanvasTexture(canvas)
+    gradientMaterial.value = new MeshStandardMaterial({ map: texture })
+  },
+  { immediate: true },
+)
+
+watch(
+  () => gradientMaterial.value,
+  (mat) => {
+    if (mat) {
+      if (materials.value.length < 6) materials.value.push(mat)
+      else materials.value[5] = mat
+    }
+  },
+  { immediate: true },
+)
 
 const planeMaterial = ref<MeshStandardMaterial | null>(null)
 
@@ -56,6 +70,12 @@ watch(
   },
   { immediate: true },
 )
+
+onMounted(() => {
+  new TextureLoader().load(reverseImageUrl, (texture) => {
+    materials.value[4] = new MeshStandardMaterial({ map: texture })
+  })
+})
 
 const defaultScale = 1
 const hoverScaleFactor = 1.05

@@ -23,6 +23,7 @@ export const useTileGrid = (
 
   const weightedShuffle = () => {
     const weightedPool: { imageUrl: string; rarity: string }[] = []
+
     tilePool.forEach((t) => {
       for (let i = 0; i < t.weight; i++) {
         weightedPool.push({ imageUrl: t.imageUrl, rarity: t.rarity })
@@ -31,16 +32,24 @@ export const useTileGrid = (
 
     const uniqueTiles: { imageUrl: string; rarity: string }[] = []
     const totalPairs = totalTiles / 2
+    const usedKeys = new Set<string>()
 
     while (uniqueTiles.length < totalPairs && weightedPool.length > 0) {
       const index = Math.floor(rng() * weightedPool.length)
       const chosen = weightedPool.splice(index, 1)[0]
-      if (!uniqueTiles.find((t) => t.imageUrl === chosen.imageUrl && t.rarity === chosen.rarity)) {
+      const key = `${chosen.imageUrl}|${chosen.rarity}`
+
+      if (!usedKeys.has(key)) {
         uniqueTiles.push(chosen)
+        usedKeys.add(key)
       }
     }
 
-    const fullDeck = [...uniqueTiles, ...uniqueTiles]
+    const fullDeck: { imageUrl: string; rarity: string }[] = []
+    uniqueTiles.forEach((t) => {
+      fullDeck.push({ ...t })
+      fullDeck.push({ ...t })
+    })
 
     for (let i = fullDeck.length - 1; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1))
