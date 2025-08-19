@@ -12,9 +12,6 @@ const emit = defineEmits(['move-made', 'game-over'])
 const matchSound = new Audio('/sounds/match.mp3')
 matchSound.volume = SOUND_VOLUME
 
-const loadedTiles = ref(0)
-const allLoaded = ref(false)
-
 const tileSize: [number, number, number] = [1, 1, 0.05]
 const gameStore = useGameStore()
 
@@ -88,29 +85,11 @@ watch(
 
     flippedTiles.value = []
     isProcessing.value = false
-    loadedTiles.value = 0
-    allLoaded.value = false
   },
 )
-
-const handleTileLoaded = () => {
-  loadedTiles.value += 1
-  if (loadedTiles.value === tiles.value.length) {
-    allLoaded.value = true
-  }
-}
 </script>
 
 <template>
-  <div
-    v-show="!allLoaded"
-    class="bg-opacity-70 absolute inset-0 z-50 flex items-center justify-center bg-gray-900"
-  >
-    <div
-      class="h-16 w-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"
-    ></div>
-  </div>
-
   <TresCanvas>
     <TresPerspectiveCamera :position="[0, 0, cameraZ]" :look-at="[0, 0, 0]" :fov="fov" />
     <Tile
@@ -122,7 +101,6 @@ const handleTileLoaded = () => {
       :image-url="tile.imageUrl"
       :rarity="tile.rarity"
       @click="() => onTileFlip(tile.id)"
-      @loaded="handleTileLoaded"
     />
     <TresAmbientLight :intensity="2" />
   </TresCanvas>

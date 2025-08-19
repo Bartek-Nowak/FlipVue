@@ -7,8 +7,6 @@ import { SOUND_VOLUME } from '../config/sounds'
 
 const reverseImageUrl = '/reverse-card.png'
 
-const emit = defineEmits(['loaded'])
-
 const isFlipped = defineModel<boolean>('isFlipped')
 
 const flipSound = new Audio('/sounds/flip.mp3')
@@ -70,39 +68,26 @@ watch(
 const planeMaterial = ref<MeshStandardMaterial | null>(null)
 
 onMounted(() => {
-  let backLoaded = false
-  let frontLoaded = false
-
-  const checkLoaded = () => {
-    if (backLoaded && frontLoaded) {
-      emit('loaded')
-    }
-  }
-
   new TextureLoader().load(reverseImageUrl, (texture) => {
     materials.value[4] = new MeshStandardMaterial({ map: texture })
-    backLoaded = true
-    checkLoaded()
   })
-
-  watch(
-    () => props.imageUrl,
-    (url) => {
-      if (!url) return
-      new TextureLoader().load(url, (texture) => {
-        planeMaterial.value = new MeshStandardMaterial({
-          map: texture,
-          transparent: true,
-          alphaTest: 0.1,
-        })
-        frontLoaded = true
-        checkLoaded()
-      })
-    },
-    { immediate: true },
-  )
 })
 
+watch(
+  () => props.imageUrl,
+  (url) => {
+    if (!url) return
+
+    new TextureLoader().load(url, (texture) => {
+      planeMaterial.value = new MeshStandardMaterial({
+        map: texture,
+        transparent: true,
+        alphaTest: 0.1,
+      })
+    })
+  },
+  { immediate: true },
+)
 const defaultScale = 1
 const hoverScaleFactor = 1.05
 
