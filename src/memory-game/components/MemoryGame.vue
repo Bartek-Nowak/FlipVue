@@ -74,7 +74,9 @@ const shareSeed = () => {
 }
 
 const newGame = () => {
+  stopTimer()
   gameStore.generateNewSeed()
+  isNewGame.value = true
   moves.value = 0
   time.value = 0
 }
