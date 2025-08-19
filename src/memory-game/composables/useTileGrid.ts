@@ -1,5 +1,6 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import tilePool from '../data/tilePool.json'
+import type { TileData } from '../types/TileData'
 
 export const useTileGrid = (
   totalTiles: number,
@@ -8,26 +9,7 @@ export const useTileGrid = (
   margin = 0.2,
   padding = 0.5,
 ) => {
-  const cols = ref(4)
-  const spacingX = tileSize[0] + margin
-  const spacingY = tileSize[1] + margin
-  const tiles = ref<
-    {
-      id: number
-      position: [number, number, number]
-      isFlipped: boolean
-      imageUrl: string
-      rarity:
-        | 'common'
-        | 'uncommon'
-        | 'rare'
-        | 'mythical'
-        | 'legendary'
-        | 'ancient'
-        | 'exceedigly_rare'
-        | 'immortal'
-    }[]
-  >([])
+  const tiles = ref<TileData[]>([])
   const cameraZ = ref(10)
   const fov = 50
 
@@ -68,54 +50,39 @@ export const useTileGrid = (
     return fullDeck
   }
 
-  const updateCols = () => {
-    const width = window.innerWidth
-    if (width < 640) cols.value = 2
-    else if (width < 1024) cols.value = 4
-    else cols.value = 6
-  }
+  const deck = weightedShuffle()
+  tiles.value = deck.map((t, i) => ({
+    id: i,
+    position: [0, 0, 0] as [number, number, number],
+    isFlipped: false,
+    imageUrl: t.imageUrl,
+    rarity: t.rarity as TileData['rarity'],
+  }))
 
-  const updatePositions = () => {
+  const updateGrid = () => {
+    const approxCols = Math.ceil(Math.sqrt(totalTiles))
+    const colsCount = approxCols
+    const rowsCount = Math.ceil(totalTiles / colsCount)
+
     tiles.value.forEach((tile, i) => {
-      const x = (i % cols.value) * spacingX - ((cols.value - 1) * spacingX) / 2
-      const y =
-        -Math.floor(i / cols.value) * spacingY +
-        ((Math.ceil(totalTiles / cols.value) - 1) * spacingY) / 2
+      const row = Math.floor(i / colsCount)
+      const colInRow = i % colsCount
+      const tilesInThisRow =
+        row === rowsCount - 1 ? totalTiles - colsCount * (rowsCount - 1) : colsCount
+      const x =
+        colInRow * (tileSize[0] + margin) - ((tilesInThisRow - 1) * (tileSize[0] + margin)) / 2
+      const y = -row * (tileSize[1] + margin) + ((rowsCount - 1) * (tileSize[1] + margin)) / 2
       tile.position = [x, y, 0]
     })
-  }
 
-  const calculateCameraZ = () => {
-    const gridWidth = cols.value * tileSize[0] + (cols.value - 1) * margin + padding * 2
+    const gridWidth = colsCount * tileSize[0] + (colsCount - 1) * margin + padding * 2
+    const gridHeight = rowsCount * tileSize[1] + (rowsCount - 1) * margin + padding * 2
     const fovRad = (fov * Math.PI) / 180
-    cameraZ.value = gridWidth / 2 / Math.tan(fovRad / 2)
+    cameraZ.value = Math.max(gridWidth, gridHeight) / 2 / Math.tan(fovRad / 2)
   }
 
-  const handleResize = () => {
-    updateCols()
-    calculateCameraZ()
-    updatePositions()
-  }
-
-  onMounted(() => {
-    const deck = weightedShuffle()
-    tiles.value = deck.map((t, i) => ({
-      id: i,
-      position: [0, 0, 0] as [number, number, number],
-      isFlipped: false,
-      imageUrl: t.imageUrl,
-      rarity: t.rarity as any,
-    }))
-
-    updateCols()
-    calculateCameraZ()
-    updatePositions()
-    window.addEventListener('resize', handleResize)
-  })
-
-  onUnmounted(() => {
-    window.removeEventListener('resize', handleResize)
-  })
+  updateGrid()
+  window.addEventListener('resize', updateGrid)
 
   return { tiles, cameraZ, fov }
 }
