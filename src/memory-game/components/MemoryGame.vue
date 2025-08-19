@@ -33,21 +33,40 @@
     <div
       class="flex w-full flex-1 items-center justify-center rounded-lg bg-gray-700 p-4 shadow-inner"
     >
-      <MemoryCanvas @move-made="moves++" @game-over="stopTimer" />
+      <MemoryCanvas :seed="gameStore.seed" @move-made="moves++" @game-over="gameOver" />
     </div>
+
+    <NewGameModal v-model:isOpen="isNewGame" @start-game="startTimer" />
+    <GameOverModal v-model:isOpen="isGameOver" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useGameStore } from '../stores/game'
 import MemoryCanvas from './MemoryCanvas.vue'
 import Timer from './Timer.vue'
 import MoveCounter from './MoveCounter.vue'
+import GameOverModal from './GameOverModal.vue'
+import NewGameModal from './NewGameModal.vue'
 
 const moves = ref(0)
+const time = ref(0)
+let timer: ReturnType<typeof setInterval>
+
+const isNewGame = ref(true)
+const isGameOver = ref(false)
 
 const gameStore = useGameStore()
+
+const startTimer = () => {
+  clearInterval(timer)
+  timer = setInterval(() => {
+    time.value++
+  }, 1000)
+}
+
+const stopTimer = () => clearInterval(timer)
 
 const shareSeed = () => {
   navigator.clipboard.writeText(gameStore.shareLink)
@@ -56,21 +75,14 @@ const shareSeed = () => {
 
 const newGame = () => {
   gameStore.generateNewSeed()
-  const url = gameStore.shareLink
-  window.location.href = url
+  moves.value = 0
+  time.value = 0
 }
 
-const time = ref(0)
-let timer: ReturnType<typeof setInterval>
-
-const stopTimer = () => clearInterval(timer)
-
-const startTimer = () => {
-  timer = setInterval(() => {
-    time.value++
-  }, 1000)
+const gameOver = () => {
+  stopTimer()
+  isGameOver.value = true
 }
 
-onMounted(() => startTimer())
 onUnmounted(() => clearInterval(timer))
 </script>
