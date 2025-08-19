@@ -33,7 +33,7 @@ const onTileFlip = (tileId: number) => {
     const firstTile = tiles.value[firstId]
     const secondTile = tiles.value[secondId]
 
-    if (firstTile.imageUrl === secondTile.imageUrl) {
+    if (firstTile.imageUrl === secondTile.imageUrl && firstTile.rarity === secondTile.rarity) {
       matchedTiles.value.add(firstId)
       matchedTiles.value.add(secondId)
       flippedTiles.value = []

@@ -35,7 +35,7 @@ export const useTileGrid = (
     while (uniqueTiles.length < totalPairs && weightedPool.length > 0) {
       const index = Math.floor(rng() * weightedPool.length)
       const chosen = weightedPool.splice(index, 1)[0]
-      if (!uniqueTiles.find((t) => t.imageUrl === chosen.imageUrl)) {
+      if (!uniqueTiles.find((t) => t.imageUrl === chosen.imageUrl && t.rarity === chosen.rarity)) {
         uniqueTiles.push(chosen)
       }
     }
