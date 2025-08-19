@@ -118,7 +118,6 @@ export const useGameStore = defineStore('game', () => {
     moves.value = 0
     time.value = 0
     matchedTiles.value = new Set()
-    generateNewSeed(tiles || totalTiles.value)
 
     const newUrl = `${window.location.origin}${window.location.pathname}?token=${generateToken()}`
     window.history.replaceState(null, '', newUrl)

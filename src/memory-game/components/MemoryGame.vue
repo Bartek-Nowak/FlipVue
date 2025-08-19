@@ -82,13 +82,14 @@ const shareSeed = () => {
 
 const newGameHandler = () => {
   stopTimer()
-  gameStore.generateNewSeed()
   isNewGame.value = true
+  gameStore.generateNewSeed()
 }
 
 const playAgainHandler = () => {
   stopTimer()
   isNewGame.value = true
+  gameStore.generateNewSeed()
 }
 
 const gameOverHandler = () => {
