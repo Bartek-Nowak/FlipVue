@@ -13,7 +13,7 @@
         />
         <button
           class="absolute top-1/2 right-3 cursor-pointer text-lg text-gray-400"
-          @click="generateSeed"
+          @click="gameStore.generateNewSeed()"
         >
           🎲
         </button>
@@ -26,26 +26,33 @@
           <label
             class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 font-medium text-white transition hover:bg-gray-700 has-[:checked]:border-green-500 has-[:checked]:bg-green-600 has-[:checked]:text-white"
           >
-            <input type="radio" value="6" v-model.number="difficulty" class="hidden" />
+            <input type="radio" value="6" v-model.number="gameStore.totalTiles" class="hidden" />
             Easy
           </label>
 
           <label
             class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 font-medium text-white transition hover:bg-gray-700 has-[:checked]:border-green-500 has-[:checked]:bg-green-600 has-[:checked]:text-white"
           >
-            <input type="radio" value="12" v-model.number="difficulty" class="hidden" />
+            <input type="radio" value="12" v-model.number="gameStore.totalTiles" class="hidden" />
             Medium
           </label>
 
           <label
             class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 font-medium text-white transition hover:bg-gray-700 has-[:checked]:border-green-500 has-[:checked]:bg-green-600 has-[:checked]:text-white"
           >
-            <input type="radio" value="16" v-model.number="difficulty" class="hidden" />
+            <input type="radio" value="16" v-model.number="gameStore.totalTiles" class="hidden" />
             Hard
           </label>
         </div>
       </div>
 
+      <button
+        :disabled="!gameStore.canContinue"
+        @click="contiuneGame"
+        class="w-full cursor-pointer rounded-lg bg-blue-600 px-4 py-2 font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Continue
+      </button>
       <button
         @click="startGame"
         class="w-full cursor-pointer rounded-lg bg-green-600 px-4 py-2 font-bold text-white transition hover:bg-green-700"
@@ -57,44 +64,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
 import { useGameStore } from '../stores/game'
 import BaseModal from '@/components/BaseModal.vue'
 
 const gameStore = useGameStore()
 const isOpen = defineModel<boolean>('isOpen', { default: true })
 
-const emit = defineEmits(['start-game'])
-const difficulty = ref(gameStore.totalTiles)
-
-watchEffect(() => {
-  difficulty.value = gameStore.totalTiles
-})
+const emit = defineEmits(['start-game', 'continue-game'])
 
 const closeModal = () => {
   isOpen.value = false
 }
 
-const generateSeed = () => {
-  gameStore.generateNewSeed(difficulty.value)
+const startGame = () => {
+  gameStore.newGame()
+  emit('start-game')
+  closeModal()
 }
 
-const startGame = () => {
-  gameStore.totalTiles = difficulty.value
-
-  const params = new URLSearchParams(window.location.search)
-  const token = params.get('token')
-
-  if (!token) {
-    generateSeed()
-  }
-
-  const newToken = gameStore.generateToken()
-  const baseUrl = window.location.origin + window.location.pathname
-  const newUrl = `${baseUrl}?token=${newToken}`
-  window.history.replaceState(null, '', newUrl)
-
-  emit('start-game')
+const contiuneGame = () => {
+  gameStore.continueGame()
+  emit('continue-game')
   closeModal()
 }
 </script>

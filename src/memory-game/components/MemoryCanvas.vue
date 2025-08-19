@@ -23,13 +23,16 @@ const cameraZ = ref(0)
 const fov = ref(0)
 
 const flippedTiles = ref<string[]>([])
-const matchedTiles = ref<Set<string>>(new Set())
 const isProcessing = ref(false)
 
 const onTileFlip = (tileId: string) => {
   const tileIndex = tiles.value.findIndex((t) => t.id === tileId)
   if (tileIndex === -1) return
-  if (flippedTiles.value.includes(tileId) || matchedTiles.value.has(tileId) || isProcessing.value)
+  if (
+    flippedTiles.value.includes(tileId) ||
+    gameStore.matchedTiles.has(tileId) ||
+    isProcessing.value
+  )
     return
 
   flippedTiles.value.push(tileId)
@@ -45,15 +48,14 @@ const onTileFlip = (tileId: string) => {
     const secondTile = tiles.value[secondIndex]
 
     if (firstTile.imageUrl === secondTile.imageUrl && firstTile.rarity === secondTile.rarity) {
-      matchedTiles.value.add(firstId)
-      matchedTiles.value.add(secondId)
+      gameStore.matchedTiles = new Set([...gameStore.matchedTiles, firstId, secondId])
       flippedTiles.value = []
       isProcessing.value = false
 
       matchSound.currentTime = 0
       matchSound.play()
 
-      if (matchedTiles.value.size === tiles.value.length) {
+      if (gameStore.matchedTiles.size === tiles.value.length) {
         emit('game-over')
       }
     } else {
@@ -75,12 +77,16 @@ watch(
       cameraZ: newZ,
       fov: newF,
     } = useTileGrid(gameStore.totalTiles, tileSize, gameStore.seed)
-    tiles.value = newTiles.value
+
+    tiles.value = newTiles.value.map((tile) => ({
+      ...tile,
+      isFlipped: gameStore.matchedTiles.has(tile.id),
+    }))
+
     cameraZ.value = newZ.value
     fov.value = newF
 
     flippedTiles.value = []
-    matchedTiles.value = new Set()
     isProcessing.value = false
     loadedTiles.value = 0
     allLoaded.value = false

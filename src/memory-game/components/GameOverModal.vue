@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { watch } from 'vue'
+import { useGameStore } from '../stores/game'
 import BaseModal from '@/components/BaseModal.vue'
+
+const gameStore = useGameStore()
 
 const isOpen = defineModel<boolean>('isOpen', { default: false })
 
@@ -26,6 +30,12 @@ const formatTime = (seconds: number) => {
   const s = (seconds % 60).toString().padStart(2, '0')
   return `${m}:${s}`
 }
+
+watch(isOpen, () => {
+  if (isOpen.value) {
+    gameStore.deleteLocal()
+  }
+})
 </script>
 
 <template>

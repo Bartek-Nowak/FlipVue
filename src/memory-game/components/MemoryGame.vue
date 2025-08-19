@@ -7,16 +7,16 @@
       <div class="mb-6 flex w-full gap-6 lg:flex-col">
         <div class="flex flex-col items-center gap-2">
           <span class="text-xl font-bold">Timer</span>
-          <Timer :time="time" />
+          <Timer :time="gameStore.time" />
         </div>
         <div class="flex flex-col items-center gap-2">
           <span class="text-xl font-bold">Moves</span>
-          <MoveCounter :moves="moves" />
+          <MoveCounter :moves="gameStore.moves" />
         </div>
       </div>
 
       <button
-        @click="newGame"
+        @click="newGameHandler"
         class="mt-auto w-full rounded-lg bg-purple-600 px-4 py-2 font-bold transition hover:bg-purple-700"
       >
         New Game
@@ -33,11 +33,20 @@
     <div
       class="relative flex w-full flex-1 items-center justify-center rounded-lg bg-gray-700 p-4 shadow-inner"
     >
-      <MemoryCanvas :seed="gameStore.seed" @move-made="moves++" @game-over="gameOver" />
+      <MemoryCanvas
+        :seed="gameStore.seed"
+        @move-made="gameStore.moves++"
+        @game-over="gameOverHandler"
+      />
     </div>
 
-    <NewGameModal v-model:isOpen="isNewGame" @start-game="startTimer" />
-    <GameOverModal v-model:isOpen="isGameOver" :moves="moves" :time="time" @play-again="newGame" />
+    <NewGameModal v-model:isOpen="isNewGame" @start-game="startTimer" @continue-game="startTimer" />
+    <GameOverModal
+      v-model:isOpen="isGameOver"
+      :moves="gameStore.moves"
+      :time="gameStore.time"
+      @play-again="playAgainHandler"
+    />
   </div>
 </template>
 
@@ -50,8 +59,6 @@ import MoveCounter from './MoveCounter.vue'
 import GameOverModal from './GameOverModal.vue'
 import NewGameModal from './NewGameModal.vue'
 
-const moves = ref(0)
-const time = ref(0)
 let timer: ReturnType<typeof setInterval>
 
 const isNewGame = ref(true)
@@ -62,7 +69,7 @@ const gameStore = useGameStore()
 const startTimer = () => {
   clearInterval(timer)
   timer = setInterval(() => {
-    time.value++
+    gameStore.time++
   }, 1000)
 }
 
@@ -73,15 +80,18 @@ const shareSeed = () => {
   alert('Link copied to clipboard!')
 }
 
-const newGame = () => {
+const newGameHandler = () => {
   stopTimer()
   gameStore.generateNewSeed()
   isNewGame.value = true
-  moves.value = 0
-  time.value = 0
 }
 
-const gameOver = () => {
+const playAgainHandler = () => {
+  stopTimer()
+  isNewGame.value = true
+}
+
+const gameOverHandler = () => {
   stopTimer()
   isGameOver.value = true
 }
