@@ -3,14 +3,20 @@
     <div class="flex flex-col items-center justify-center gap-4 text-center">
       <div class="text-lg font-medium">Welcome to the Memory Game!</div>
 
-      <div class="w-full">
+      <div class="relative w-full">
         <label for="seed" class="mb-1 block text-sm font-medium">Seed:</label>
         <input
           id="seed"
           type="number"
           v-model.number="gameStore.seed"
-          class="w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-white"
+          class="w-full rounded border border-gray-600 bg-gray-800 py-2 pr-10 pl-2 text-white"
         />
+        <button
+          class="absolute top-1/2 right-3 cursor-pointer text-lg text-gray-400"
+          @click="generateSeed"
+        >
+          🎲
+        </button>
       </div>
 
       <div class="w-full">
@@ -42,7 +48,7 @@
 
       <button
         @click="startGame"
-        class="w-full rounded-lg bg-green-600 px-4 py-2 font-bold text-white transition hover:bg-green-700"
+        class="w-full cursor-pointer rounded-lg bg-green-600 px-4 py-2 font-bold text-white transition hover:bg-green-700"
       >
         Start Game
       </button>
@@ -69,6 +75,10 @@ const closeModal = () => {
   isOpen.value = false
 }
 
+const generateSeed = () => {
+  gameStore.generateNewSeed(difficulty.value)
+}
+
 const startGame = () => {
   gameStore.totalTiles = difficulty.value
 
@@ -76,7 +86,7 @@ const startGame = () => {
   const token = params.get('token')
 
   if (!token) {
-    gameStore.generateNewSeed(difficulty.value)
+    generateSeed()
   }
 
   const newToken = gameStore.generateToken()

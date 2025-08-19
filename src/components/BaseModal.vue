@@ -5,7 +5,7 @@
         <button
           v-if="!hiddeCloseButton"
           @click="$emit('close')"
-          class="absolute top-2 right-2 cursor-pointer text-lg font-bold text-white transition hover:text-purple-500"
+          class="absolute top-0 right-2 cursor-pointer text-lg font-bold text-white transition hover:text-purple-500"
         >
           ×
         </button>

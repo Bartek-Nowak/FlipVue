@@ -57,7 +57,7 @@ const formatTime = (seconds: number) => {
 
       <button
         @click="playAgain"
-        class="relative z-10 w-full rounded-lg bg-purple-600 px-4 py-2 font-bold transition hover:bg-purple-700"
+        class="relative z-10 w-full cursor-pointer rounded-lg bg-purple-600 px-4 py-2 font-bold transition hover:bg-purple-700"
       >
         Play Again
       </button>
