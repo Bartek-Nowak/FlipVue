@@ -61,7 +61,7 @@ export const useTileGrid = (
 
   const deck = weightedShuffle()
   tiles.value = deck.map((t, i) => ({
-    id: i,
+    id: `${seed}-${i}`,
     position: [0, 0, 0] as [number, number, number],
     isFlipped: false,
     imageUrl: t.imageUrl,

@@ -8,6 +8,9 @@ import type { TileData } from '../types/TileData'
 
 const emit = defineEmits(['move-made', 'game-over'])
 
+const loadedTiles = ref(0)
+const allLoaded = ref(false)
+
 const tileSize: [number, number, number] = [1, 1, 0.05]
 const gameStore = useGameStore()
 
@@ -15,23 +18,27 @@ const tiles = ref<TileData[]>([])
 const cameraZ = ref(0)
 const fov = ref(0)
 
-const flippedTiles = ref<number[]>([])
-const matchedTiles = ref<Set<number>>(new Set())
+const flippedTiles = ref<string[]>([])
+const matchedTiles = ref<Set<string>>(new Set())
 const isProcessing = ref(false)
 
-const onTileFlip = (tileId: number) => {
+const onTileFlip = (tileId: string) => {
+  const tileIndex = tiles.value.findIndex((t) => t.id === tileId)
+  if (tileIndex === -1) return
   if (flippedTiles.value.includes(tileId) || matchedTiles.value.has(tileId) || isProcessing.value)
     return
 
   flippedTiles.value.push(tileId)
-  tiles.value[tileId].isFlipped = true
+  tiles.value[tileIndex].isFlipped = true
 
   if (flippedTiles.value.length === 2) {
     emit('move-made')
     isProcessing.value = true
     const [firstId, secondId] = flippedTiles.value
-    const firstTile = tiles.value[firstId]
-    const secondTile = tiles.value[secondId]
+    const firstIndex = tiles.value.findIndex((t) => t.id === firstId)
+    const secondIndex = tiles.value.findIndex((t) => t.id === secondId)
+    const firstTile = tiles.value[firstIndex]
+    const secondTile = tiles.value[secondIndex]
 
     if (firstTile.imageUrl === secondTile.imageUrl && firstTile.rarity === secondTile.rarity) {
       matchedTiles.value.add(firstId)
@@ -44,8 +51,8 @@ const onTileFlip = (tileId: number) => {
       }
     } else {
       setTimeout(() => {
-        tiles.value[firstId].isFlipped = false
-        tiles.value[secondId].isFlipped = false
+        tiles.value[firstIndex].isFlipped = false
+        tiles.value[secondIndex].isFlipped = false
         flippedTiles.value = []
         isProcessing.value = false
       }, 1000)
@@ -68,11 +75,29 @@ watch(
     flippedTiles.value = []
     matchedTiles.value = new Set()
     isProcessing.value = false
+    loadedTiles.value = 0
+    allLoaded.value = false
   },
 )
+
+const handleTileLoaded = () => {
+  loadedTiles.value += 1
+  if (loadedTiles.value === tiles.value.length) {
+    allLoaded.value = true
+  }
+}
 </script>
 
 <template>
+  <div
+    v-show="!allLoaded"
+    class="bg-opacity-70 absolute inset-0 z-50 flex items-center justify-center bg-gray-900"
+  >
+    <div
+      class="h-16 w-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"
+    ></div>
+  </div>
+
   <TresCanvas>
     <TresPerspectiveCamera :position="[0, 0, cameraZ]" :look-at="[0, 0, 0]" :fov="fov" />
     <Tile
@@ -84,6 +109,7 @@ watch(
       :image-url="tile.imageUrl"
       :rarity="tile.rarity"
       @click="() => onTileFlip(tile.id)"
+      @loaded="handleTileLoaded"
     />
     <TresAmbientLight :intensity="2" />
   </TresCanvas>

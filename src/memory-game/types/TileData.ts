@@ -1,5 +1,5 @@
 export interface TileData {
-  id: number
+  id: string
   position: [number, number, number]
   isFlipped: boolean
   imageUrl: string

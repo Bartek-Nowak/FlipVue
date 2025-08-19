@@ -31,7 +31,7 @@
     </div>
 
     <div
-      class="flex w-full flex-1 items-center justify-center rounded-lg bg-gray-700 p-4 shadow-inner"
+      class="relative flex w-full flex-1 items-center justify-center rounded-lg bg-gray-700 p-4 shadow-inner"
     >
       <MemoryCanvas :seed="gameStore.seed" @move-made="moves++" @game-over="gameOver" />
     </div>
