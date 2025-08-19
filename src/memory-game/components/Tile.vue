@@ -3,12 +3,23 @@ import { onMounted, ref, watch } from 'vue'
 import { useRenderLoop } from '@tresjs/core'
 import { MeshStandardMaterial, CanvasTexture, TextureLoader } from 'three'
 import { rarityColor } from '../utils/cardRarity'
+import { SOUND_VOLUME } from '../config/sounds'
 
 const reverseImageUrl = '/reverse-card.png'
 
 const emit = defineEmits(['loaded'])
 
 const isFlipped = defineModel<boolean>('isFlipped')
+
+const flipSound = new Audio('/sounds/flip.mp3')
+flipSound.volume = SOUND_VOLUME
+
+watch(isFlipped, (flipped, prev) => {
+  if (flipped && !prev) {
+    flipSound.currentTime = 0
+    flipSound.play()
+  }
+})
 
 const props = defineProps<{
   size: [number, number, number]

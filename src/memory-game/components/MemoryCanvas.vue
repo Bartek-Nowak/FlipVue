@@ -4,9 +4,13 @@ import { TresCanvas } from '@tresjs/core'
 import { useGameStore } from '../stores/game'
 import { useTileGrid } from '../composables/useTileGrid'
 import Tile from './Tile.vue'
+import { SOUND_VOLUME } from '../config/sounds'
 import type { TileData } from '../types/TileData'
 
 const emit = defineEmits(['move-made', 'game-over'])
+
+const matchSound = new Audio('/sounds/match.mp3')
+matchSound.volume = SOUND_VOLUME
 
 const loadedTiles = ref(0)
 const allLoaded = ref(false)
@@ -45,6 +49,9 @@ const onTileFlip = (tileId: string) => {
       matchedTiles.value.add(secondId)
       flippedTiles.value = []
       isProcessing.value = false
+
+      matchSound.currentTime = 0
+      matchSound.play()
 
       if (matchedTiles.value.size === tiles.value.length) {
         emit('game-over')
