@@ -1,11 +1,45 @@
+<script setup lang="ts">
+import BaseModal from '@/components/BaseModal.vue'
+
+const isOpen = defineModel<boolean>('isOpen', { default: false })
+
+const props = defineProps<{
+  moves: number
+  time: number
+}>()
+
+const emit = defineEmits(['play-again'])
+
+const closeModal = () => {
+  isOpen.value = false
+}
+
+const playAgain = () => {
+  emit('play-again')
+  closeModal()
+}
+
+const formatTime = (seconds: number) => {
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, '0')
+  const s = (seconds % 60).toString().padStart(2, '0')
+  return `${m}:${s}`
+}
+</script>
+
 <template>
   <BaseModal :is-open="isOpen" title="🎉 Congratulations! 🎉" @close="closeModal">
     <div class="relative flex flex-col items-center justify-center overflow-hidden text-center">
       <div class="animate-fade-in-up relative z-10 mb-4 text-2xl font-bold">
         You have completed the Memory Game!
       </div>
-      <div class="animate-fade-in-up relative z-10 mb-2 delay-100">🏆 Total Moves: 24</div>
-      <div class="animate-fade-in-up relative z-10 mb-6 delay-200">⏱ Time Taken: 2:36</div>
+      <div class="animate-fade-in-up relative z-10 mb-2 delay-100">
+        🏆 Total Moves: {{ props.moves }}
+      </div>
+      <div class="animate-fade-in-up relative z-10 mb-6 delay-200">
+        ⏱ Time Taken: {{ formatTime(props.time) }}
+      </div>
 
       <div class="pointer-events-none absolute inset-0 -bottom-20 z-0 flex w-full items-end">
         <span
@@ -30,23 +64,6 @@
     </div>
   </BaseModal>
 </template>
-
-<script setup lang="ts">
-import BaseModal from '@/components/BaseModal.vue'
-
-const isOpen = defineModel<boolean>('isOpen', { default: false })
-
-const emit = defineEmits(['play-again'])
-
-const closeModal = () => {
-  isOpen.value = false
-}
-
-const playAgain = () => {
-  emit('play-again')
-  closeModal()
-}
-</script>
 
 <style scoped>
 @keyframes balloonUp {
