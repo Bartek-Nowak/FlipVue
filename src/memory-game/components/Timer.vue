@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col items-center gap-2">
     <div
-      class="relative flex h-24 w-24 items-center justify-center rounded-full"
+      class="relative flex size-14 items-center justify-center rounded-full lg:size-24"
       :style="{
         background: `conic-gradient(${currentColor} 0deg, ${currentColor} ${progress * 360}deg, #333 ${progress * 360}deg 360deg)`,
       }"
     >
       <div
-        class="absolute inset-2 flex items-center justify-center rounded-full bg-gray-900 text-xl font-bold text-white"
+        class="text-md absolute inset-1 flex items-center justify-center rounded-full bg-gray-900 font-bold text-white lg:inset-2 lg:text-xl"
       >
         {{ time }}s
       </div>

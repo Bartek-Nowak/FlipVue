@@ -3,31 +3,35 @@
     <div
       class="flex w-full flex-col items-start justify-start rounded-lg bg-gray-800 p-4 shadow-lg md:w-1/4"
     >
-      <h1 class="mb-6 text-center text-2xl font-bold md:text-left">Memory Game</h1>
-      <div class="mb-6 flex w-full gap-6 lg:flex-col">
+      <h1 class="text-md mb-6 hidden text-center text-2xl font-bold md:block md:text-left">
+        Memory Game
+      </h1>
+      <div class="mb-6 flex w-full justify-around gap-6 lg:flex-col">
         <div class="flex flex-col items-center gap-2">
-          <span class="text-xl font-bold">Timer</span>
+          <span class="text-sm font-bold lg:text-xl">Timer</span>
           <Timer :time="gameStore.time" />
         </div>
         <div class="flex flex-col items-center gap-2">
-          <span class="text-xl font-bold">Moves</span>
+          <span class="text-sm font-bold lg:text-xl">Moves</span>
           <MoveCounter :moves="gameStore.moves" />
         </div>
       </div>
 
-      <button
-        @click="newGameHandler"
-        class="mt-auto w-full rounded-lg bg-purple-600 px-4 py-2 font-bold transition hover:bg-purple-700"
-      >
-        New Game
-      </button>
+      <div class="flex w-full gap-2 lg:flex-col">
+        <button
+          @click="newGameHandler"
+          class="lg:text-md mt-auto w-full rounded-lg bg-purple-600 px-2 py-2 text-xs font-bold whitespace-nowrap transition hover:bg-purple-700 sm:text-sm"
+        >
+          New Game
+        </button>
 
-      <button
-        @click="shareSeed"
-        class="mt-2 w-full rounded-lg bg-blue-600 px-4 py-2 font-bold transition hover:bg-blue-700"
-      >
-        Share Game
-      </button>
+        <button
+          @click="shareSeed"
+          class="lg:text-md mt-2 w-full rounded-lg bg-blue-600 px-2 py-2 text-xs font-bold whitespace-nowrap transition hover:bg-blue-700 sm:text-sm"
+        >
+          Share Game
+        </button>
+      </div>
     </div>
 
     <div
