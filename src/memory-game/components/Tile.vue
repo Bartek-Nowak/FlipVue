@@ -146,7 +146,7 @@ const handlePointerLeave = () => {
     <TresMesh :position="[0, 0, -size[2] / 2 - 0.05]" :rotation="[0, Math.PI, 0]">
       <TresPlaneGeometry :args="[size[0] * 0.9, size[1] * 0.9]" />
       <TresMeshStandardMaterial v-if="planeMaterial" :map="planeMaterial.map" :transparent="true" />
-      <TresMeshStandardMaterial v-else color="red" />
+      <TresMeshStandardMaterial v-else color="gray" />
     </TresMesh>
   </TresMesh>
 </template>
