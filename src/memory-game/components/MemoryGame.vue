@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen w-full max-w-2xl flex-col gap-4 bg-gray-900 p-4 text-white md:flex-row">
+  <div class="flex h-screen w-full flex-col gap-4 bg-gray-900 p-4 text-white md:flex-row">
     <div
       class="flex w-full flex-col items-start justify-start rounded-lg bg-gray-800 p-4 shadow-lg md:w-1/4"
     >
